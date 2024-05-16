@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jeefast.system.dao.SysRkpmDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="cn.jeefast.system.entity.SysRkpm">
+		<id column="id" property="id" />
+		<result column="xuexiao" property="xuexiao" />
+		<result column="pm" property="pm" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+	</resultMap>
+
+
+	<delete id="deleteBatch">
+		delete from sys_rkpm where id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="queryPageList" resultType="cn.jeefast.system.entity.SysRkpm">
+		select r.*  from sys_rkpm r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.pm asc
+	</select>
+
+	<select id="queryPagecolList" resultType="cn.jeefast.system.entity.SysRkpm">
+		select r.*  from sys_rkpm r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.${sidx} ${order}
+	</select>
+
+    <select id="queryPagerkxypmglList" resultType="cn.jeefast.system.entity.SysRkpm">
+		select r.*
+		,sx.xxmc sxxxmc
+		,sx.zf sxzf
+		,sx.xj sxxj
+		,sx.bxcc sxbxcc
+		,st.isjbw stisjbw
+		,st.iseyy stiseyy
+		,st.sfsyl stsfsyl
+
+		from sys_rkpm r
+		inner join sys_xyhdxpm sx
+		on r.xuexiao = sx.xuexiao
+		inner join sys_tdx st
+		on r.xuexiao = st.xuexiao
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		group by r.xuexiao
+		order by r.pm asc
+	</select>
+</mapper>

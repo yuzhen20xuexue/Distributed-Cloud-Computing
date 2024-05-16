@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jeefast.system.dao.SysZsjhDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="cn.jeefast.system.entity.SysZsjh">
+		<id column="id" property="id" />
+		<result column="xh" property="xh" />
+		<result column="nf" property="nf" />
+		<result column="xuexiao" property="xuexiao" />
+		<result column="sf" property="sf" />
+		<result column="cs" property="cs" />
+		<result column="isjbw" property="isjbw" />
+		<result column="iseyy" property="iseyy" />
+		<result column="issyl" property="issyl" />
+		<result column="kl" property="kl" />
+		<result column="pc" property="pc" />
+		<result column="zyz" property="zyz" />
+		<result column="xkyq" property="xkyq" />
+		<result column="ml" property="ml" />
+		<result column="yjxk" property="yjxk" />
+		<result column="zy" property="zy" />
+		<result column="zydm" property="zydm" />
+		<result column="zsrs" property="zsrs" />
+		<result column="xz" property="xz" />
+		<result column="xf" property="xf" />
+		<result column="bgxz" property="bgxz" />
+		<result column="xxgs" property="xxgs" />
+		<result column="qgtyzsdm" property="qgtyzsdm" />
+		<result column="zslx" property="zslx" />
+		<result column="xxlb" property="xxlb" />
+		<result column="xllb" property="xllb" />
+		<result column="xxcym" property="xxcym" />
+		<result column="syd" property="syd" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+	</resultMap>
+
+
+	<delete id="deleteBatch">
+		delete from sys_zsjh where id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="queryPageList" resultType="cn.jeefast.system.entity.SysZsjh">
+		select r.*  from sys_zsjh r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.updatetime desc
+	</select>
+    <select id="queryPagexzyxList" resultType="cn.jeefast.system.entity.SysZsjh">
+		select r.*  from sys_zsjh r
+		<where>
+			r.nf = '2023'
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			and r.xuexiao not in(
+			select xuexiao  from sys_zsjh notin where notin.nf = '2022'
+			)
+		</where>
+		order by r.updatetime desc
+	</select>
+	<select id="queryPagexzzyList" resultType="cn.jeefast.system.entity.SysZsjh">
+		select * from sys_sttwo r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+<!--		select r.*  from sys_zsjh r-->
+<!--		<where>-->
+<!--			r.nf = '2023'-->
+<!--			<if test="name != null and name.trim() != ''">-->
+<!--				and r.`xuexiao` like concat('%',#{name},'%')-->
+<!--			</if>-->
+<!--			and r.zy not in(-->
+<!--			select r.zy  from sys_zsjh notin where notin.nf = '2022'-->
+<!--			)-->
+<!--		</where>-->
+<!--		order by r.updatetime desc-->
+	</select>
+	<select id="queryPagemztjysdgxList" resultType="cn.jeefast.system.entity.SysZsjh">
+		select r.*
+		from  sys_stone r
+
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.updatetime desc
+	</select>
+</mapper>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jeefast.system.dao.SysYfydDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="cn.jeefast.system.entity.SysYfyd">
+		<id column="id" property="id" />
+		<result column="xh" property="xh" />
+		<result column="sf" property="sf" />
+		<result column="nf" property="nf" />
+		<result column="kl" property="kl" />
+		<result column="fs" property="fs" />
+		<result column="bdrs" property="bdrs" />
+		<result column="ljrs" property="ljrs" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+	</resultMap>
+
+
+	<delete id="deleteBatch">
+		delete from sys_yfyd where id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="queryPageList" resultType="cn.jeefast.system.entity.SysYfyd">
+		select r.*  from sys_yfyd r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`fs` = #{name}
+			</if>
+		</where>
+		order by r.updatetime desc
+	</select>
+
+	<select id="queryPagecolList" resultType="cn.jeefast.system.entity.SysYfyd">
+		select r.*  from sys_yfyd r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`fs` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.${sidx} ${order}
+	</select>
+
+
+	<select id="queryPagednfsdxfjsList" resultType="cn.jeefast.system.entity.SysYfyd">
+		<choose>
+			<when test="dbnf != null and dbnf.trim() != ''">
+				(SELECT *
+				FROM sys_yfyd AS r
+				<where>
+					r.ljrs &lt;= (SELECT ljrs FROM sys_yfyd AS r2
+					<where>
+						r2.kl='物理' AND r2.nf=YEAR(curdate())-1 AND r2.fs=${name} Limit 1)+0 and r.nf=${dbnf} and r.kl like concat('%','物理','%')
+					</where>
+				</where>
+				ORDER BY fs+0 asc
+				LIMIT 1
+				)
+				UNION all
+				(SELECT *
+				FROM sys_yfyd AS r
+				<where>
+					r.ljrs &lt;= (SELECT ljrs FROM sys_yfyd AS r2
+					<where>
+						r2.kl='历史' AND r2.nf=YEAR(curdate())-1 AND r2.fs=${name} Limit 1)+0 and r.nf=${dbnf} and r.kl like concat('%','历史','%')
+					</where>
+
+				</where>
+				ORDER BY fs+0 asc
+				LIMIT 1
+				)
+
+			</when>
+			<otherwise>
+				(SELECT *
+				FROM sys_yfyd AS r
+				<where>
+					r.ljrs &lt;= (SELECT ljrs FROM sys_yfyd AS r2
+					<where>
+						r2.kl='物理' AND r2.nf=YEAR(curdate())-1 AND r2.fs=${name} Limit 1)+0 and r.nf='2022' and r.kl like concat('%','物理','%')
+					</where>
+				</where>
+				ORDER BY fs+0 asc
+				LIMIT 1
+				)
+				UNION all
+				(SELECT *
+				FROM sys_yfyd AS r
+				<where>
+					r.ljrs &lt;= (SELECT ljrs FROM sys_yfyd AS r2
+					<where>
+						r2.kl='历史' AND r2.nf=YEAR(curdate())-1 AND r2.fs=${name} Limit 1)+0 and r.nf='2022' and r.kl like concat('%','历史','%')
+					</where>
+				</where>
+
+				ORDER BY fs+0 asc
+				LIMIT 1
+				)
+				UNION all
+				(SELECT *
+				FROM sys_yfyd AS r
+				<where>
+					r.ljrs &lt;= (SELECT ljrs FROM sys_yfyd AS r2
+					<where>
+						r2.kl='物理' AND r2.nf=YEAR(curdate())-1 AND r2.fs=${name} Limit 1)+0 and r.nf='2021' and r.kl like concat('%','物理','%')
+					</where>
+				</where>
+
+				ORDER BY fs+0 asc
+				LIMIT 1
+				)
+				UNION all
+				(SELECT *
+				FROM sys_yfyd AS r
+				<where>
+					r.ljrs &lt;= (SELECT ljrs FROM sys_yfyd AS r2
+					<where>
+						r2.kl='历史' AND r2.nf=YEAR(curdate())-1 AND r2.fs=${name} Limit 1)+0 and r.nf='2021' and r.kl like concat('%','历史','%')
+					</where>
+				</where>
+
+				ORDER BY fs+0 asc
+				LIMIT 1
+				)
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="queryPagednwcylnwczhList" resultType="cn.jeefast.system.entity.SysYfyd">
+		select *,'2023' bs from sys_yfyd r
+		<where>
+			r.xh = #{name} and r.nf = '2023'
+			<if test="sfName != null and sfName.trim() != ''">
+				and r.`sf` like concat('%',#{sfName},'%')
+			</if>
+		</where>
+		union  All
+		select *,#{dbnf} bs from sys_yfyd r
+		<where>
+			r.xh = #{name} and r.nf = #{dbnf}
+			<if test="sfName != null and sfName.trim() != ''">
+				and r.`sf` like concat('%',#{sfName},'%')
+			</if>
+		</where>
+	</select>
+</mapper>

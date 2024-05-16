@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jeefast.system.dao.SysTdxDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="cn.jeefast.system.entity.SysTdx">
+		<id column="id" property="id" />
+		<result column="nf" property="nf" />
+		<result column="xuexiao" property="xuexiao" />
+		<result column="shengfen" property="shengfen" />
+		<result column="chengshi" property="chengshi" />
+		<result column="rkpm" property="rkpm" />
+		<result column="isjbw" property="isjbw" />
+		<result column="iseyy" property="iseyy" />
+		<result column="sfsyl" property="sfsyl" />
+		<result column="kl" property="kl" />
+		<result column="pc" property="pc" />
+		<result column="zyz" property="zyz" />
+		<result column="xkyq" property="xkyq" />
+		<result column="zdf" property="zdf" />
+		<result column="zdfpm" property="zdfpm" />
+		<result column="skx" property="skx" />
+		<result column="bxxz" property="bxxz" />
+		<result column="xxgs" property="xxgs" />
+		<result column="qgtyzsdm" property="qgtyzsdm" />
+		<result column="zslx" property="zslx" />
+		<result column="xxlb" property="xxlb" />
+		<result column="xllb" property="xllb" />
+		<result column="xxcym" property="xxcym" />
+		<result column="syd" property="syd" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+	</resultMap>
+
+
+	<delete id="deleteBatch">
+		delete from sys_tdx where id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="queryPageList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+
+		order by r.xuexiao desc
+
+	</select>
+
+	<select id="queryPagecolList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			<if test="zdfName != null and zdfName.trim() != ''">
+				and r.`zdf` &lt;= #{zdfName}
+			</if>
+			<if test="sfName != null and sfName.trim() != ''">
+				and r.`shengfen` like concat('%', left(#{sfName}, 2), '%')
+			</if>
+			<if test="csName != null and csName.trim() != ''">
+				and r.`chengshi` like concat('%', left(#{csName}, 2), '%')
+			</if>
+			<if test="zslx != null and zslx.trim() != ''">
+				and r.`zslx` like concat('%',#{zslx},'%')
+			</if>
+			<if test="pici != null and pici.trim() != ''">
+				and r.`pc` like concat('%',#{pici},'%')
+			</if>
+			<if test="xxlb != null and xxlb.trim() != ''">
+				and r.`xxlb` like concat('%',#{xxlb},'%')
+			</if>
+		</where>
+
+		order by r.${sidx} ${order}
+	</select>
+
+
+    <select id="queryPagegxzslqfsywcgList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*,sy.fs yfydfs
+		,sy.bdrs yfydbdrs
+		,sy.ljrs yfydjrs
+		from sys_tdx r
+		inner join sys_yfyd sy
+		on r.nf = sy.nf and r.kl = sy.kl and r.shengfen = sy.sf
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`nf` = #{name}
+			</if>
+			<if test="zyName != null and zyName.trim() != ''">
+				and r.`kl` = #{zyName}
+			</if>
+			<if test="xuexiaoName != null and xuexiaoName.trim() != ''">
+				and r.`xuexiao` like concat('%',#{xuexiaoName},'%')
+			</if>
+		</where>
+		group by r.xuexiao,r.nf,r.kl
+		order by r.updatetime desc
+	</select>
+	<select id="queryPagesjjsList" resultType="cn.jeefast.system.entity.SysTdx">
+
+		select r.*,sz.address, sx.xxmc xyhxxmc,sr.pm srpm  from sys_tdx r
+		left join sys_zsjz sz
+		on r.xuexiao = sz.xuexiao
+		left join sys_rkpm sr
+		on r.xuexiao = sr.xuexiao
+		left join sys_xyhdxpm sx
+		on r.xuexiao = sx.xuexiao
+
+
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		group by r.xuexiao
+		order by r.updatetime desc
+	</select>
+
+	<select id="queryPagesjjscolList" resultType="cn.jeefast.system.entity.SysTdx">
+
+		select r.*,sz.address, sx.xxmc xyhxxmc,sr.pm srpm  from sys_tdx r
+		left join sys_zsjz sz
+		on r.xuexiao = sz.xuexiao
+		left join sys_rkpm sr
+		on r.xuexiao = sr.xuexiao
+		left join sys_xyhdxpm sx
+		on r.xuexiao = sx.xuexiao
+
+
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		group by r.xuexiao
+		order by ${sidx} ${order}
+	</select>
+
+
+	<select id="queryPagezyjsList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*,sz.address, sx.xxmc xyhxxmc,sr.pm srpm from sys_zsjh r
+		inner join sys_zsjz sz
+		on r.xuexiao = sz.xuexiao
+		inner join sys_rkpm sr
+		on r.xuexiao = sr.xuexiao
+		inner join sys_xyhdxpm sx
+		on r.xuexiao = sx.xuexiao
+		<where>
+			r.nf = '2023'
+			<if test="xxname != null and xxname.trim() != ''">
+				and r.`xuexiao` like concat('%',#{xxname},'%')
+			</if>
+			<if test="name != null and name.trim() != ''">
+				and r.`zy` like concat('%',#{name},'%')
+			</if>
+		</where>
+
+		order by r.nf desc
+	</select>
+
+
+	<select id="queryPagezyjscolList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*,sz.address, sx.xxmc xyhxxmc,sr.pm srpm from sys_zsjh r
+		inner join sys_zsjz sz
+		on r.xuexiao = sz.xuexiao
+		inner join sys_rkpm sr
+		on r.xuexiao = sr.xuexiao
+		inner join sys_xyhdxpm sx
+		on r.xuexiao = sx.xuexiao
+		<where>
+			r.nf = '2023'
+			<if test="name != null and name.trim() != ''">
+				and r.`zy` like concat('%',#{name},'%')
+			</if>
+		</where>
+
+		order by ${sidx} ${order}
+	</select>
+
+
+	<select id="queryPagedyjsList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			<if test="sfName != null and sfName.trim() != ''">
+				and r.`shengfen` like concat('%',#{sfName},'%')
+			</if>
+			<if test="csName != null and csName.trim() != ''">
+				and r.`chengshi` like concat('%',#{csName},'%')
+			</if>
+
+		</where>
+		group by r.`xuexiao`
+		order by r.nf desc
+	</select>
+	<select id="queryPagecjjsList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			<if test="zdfName != null and zdfName.trim() != ''">
+				and r.`zdf` &lt;= #{zdfName}
+			</if>
+			<if test="csName != null and csName.trim() != ''">
+				and r.`chengshi` like concat('%',#{csName},'%')
+			</if>
+
+		</where>
+		group by r.`xuexiao`
+		order by r.nf,r.zdfpm desc
+	</select>
+
+
+	<select id="queryPagecjjscolList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			<if test="zdfName != null and zdfName.trim() != ''">
+				and r.`zdf` &lt;= #{zdfName}
+			</if>
+			<if test="csName != null and csName.trim() != ''">
+				and r.`chengshi` like concat('%',#{csName},'%')
+			</if>
+
+		</where>
+		group by r.`xuexiao`
+		order by r.${sidx} ${order}
+	</select>
+
+
+
+	<select id="queryPagelhjsList" resultType="cn.jeefast.system.entity.SysTdx">
+		select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			<if test="zdfName != null and zdfName.trim() != ''">
+				and r.`zdf` &lt;= #{zdfName}
+			</if>
+			<if test="sfName != null and sfName.trim() != ''">
+				and r.`shengfen` like concat('%', left(#{sfName}, 2), '%')
+			</if>
+			<if test="csName != null and csName.trim() != ''">
+				and r.`chengshi` like concat('%', left(#{csName}, 2), '%')
+			</if>
+			<if test="zslx != null and zslx.trim() != ''">
+				and r.`zslx` like concat('%',#{zslx},'%')
+			</if>
+			<if test="pici != null and pici.trim() != ''">
+				and r.`pc` like concat('%',#{pici},'%')
+			</if>
+			<if test="xxlb != null and xxlb.trim() != ''">
+				and r.`xxlb` like concat('%',#{xxlb},'%')
+			</if>
+		</where>
+		group by r.`xuexiao`
+		order by r.nf,r.zdfpm desc
+	</select>
+
+
+
+
+
+	<select id="querytjpxList" resultType="cn.jeefast.system.entity.SysTdx">
+		select * from (select *,(@i:=@i+1) AS 'xuhao'  from (select r.*  from sys_tdx r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+			<if test="klName != null and klName.trim() != ''">
+				and r.`kl` like concat('%',#{klName},'%')
+			</if>
+			<if test="zdfName != null and zdfName.trim() != ''">
+				and r.`zdf` &lt;= #{zdfName}
+			</if>
+
+		</where>
+		group by r.`xuexiao`
+		order by r.nf,r.zdf desc ) t,(SELECT @i:=0) AS itable) ta
+
+	</select>
+</mapper>

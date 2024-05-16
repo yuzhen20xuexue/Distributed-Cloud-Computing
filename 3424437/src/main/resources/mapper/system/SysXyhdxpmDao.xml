@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jeefast.system.dao.SysXyhdxpmDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="cn.jeefast.system.entity.SysXyhdxpm">
+		<id column="id" property="id" />
+		<result column="xh" property="xh" />
+		<result column="xxmc" property="xxmc" />
+		<result column="xuexiao" property="xuexiao" />
+		<result column="zf" property="zf" />
+		<result column="xj" property="xj" />
+		<result column="bxcc" property="bxcc" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+	</resultMap>
+
+
+	<delete id="deleteBatch">
+		delete from sys_xyhdxpm where id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="queryPageList" resultType="cn.jeefast.system.entity.SysXyhdxpm">
+		select r.*  from sys_xyhdxpm r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.updatetime desc
+	</select>
+
+	<select id="queryPagecolList" resultType="cn.jeefast.system.entity.SysXyhdxpm">
+		select r.*  from sys_xyhdxpm r
+		<where>
+			<if test="name != null and name.trim() != ''">
+				and r.`xuexiao` like concat('%',#{name},'%')
+			</if>
+		</where>
+		order by r.${sidx} ${order}
+	</select>
+
+</mapper>
